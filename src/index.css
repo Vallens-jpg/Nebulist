@@ -1,0 +1,142 @@
+@import "tailwindcss";
+
+/* =========================================================
+   NEBULAKIT — Industrial Luxury Design System
+   Aesthetic: Dark intelligence platform + warm editorial
+   ========================================================= */
+
+@theme {
+  --font-sans: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  /* Core surface */
+  --color-canvas:     #F4F3F0;   /* warm off-white — content bg */
+  --color-surface:    #FFFFFF;
+  --color-surface-2:  #FAFAF8;   /* card inner bg */
+  --color-border:     #E8E6E1;   /* warm gray border */
+  --color-border-2:   #D4D0C8;   /* slightly darker */
+
+  /* Sidebar */
+  --color-sidebar:    #0F1117;   /* near-black */
+  --color-sidebar-2:  #1A1D27;   /* active/hover */
+
+  /* Text */
+  --color-ink:        #111214;
+  --color-ink-2:      #4A4740;
+  --color-ink-3:      #9C998F;
+
+  /* Accent — Amber gold */
+  --color-gold:       #D97706;
+  --color-gold-light: #FEF3C7;
+  --color-gold-dark:  #92400E;
+
+  /* Accent 2 — Indigo electric */
+  --color-electric:   #4F46E5;
+  --color-electric-2: #EEF2FF;
+
+  /* Lead scores */
+  --color-hot:        #BE123C;
+  --color-hot-bg:     #FFF1F2;
+  --color-hot-ring:   #FECDD3;
+  --color-warm:       #B45309;
+  --color-warm-bg:    #FFFBEB;
+  --color-warm-ring:  #FDE68A;
+  --color-cold:       #1D4ED8;
+  --color-cold-bg:    #EFF6FF;
+  --color-cold-ring:  #BFDBFE;
+
+  /* Kanban columns */
+  --color-col-found:  #F0F4FF;
+  --color-col-pitch:  #FFFDF0;
+  --color-col-replied:#F0FDF4;
+}
+
+/* =========================================================
+   Base Reset
+   ========================================================= */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-family: var(--font-sans);
+  background-color: var(--color-canvas);
+  color: var(--color-ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: "ss01", "ss02", "cv01";
+}
+
+body {
+  min-height: 100vh;
+  line-height: 1.6;
+}
+
+/* =========================================================
+   Scrollbar
+   ========================================================= */
+::-webkit-scrollbar        { width: 5px; height: 5px; }
+::-webkit-scrollbar-track  { background: transparent; }
+::-webkit-scrollbar-thumb  { background: var(--color-border-2); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: #B8B4AA; }
+
+/* =========================================================
+   Utility — Noise texture overlay (subtle depth)
+   ========================================================= */
+.noise-overlay::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+/* =========================================================
+   Keyframes
+   ========================================================= */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.animate-fade-up   { animation: fadeUp  350ms cubic-bezier(.16,1,.3,1) both; }
+.animate-fade-in   { animation: fadeIn  200ms ease both; }
+.animate-slide-up  { animation: slideUp 280ms cubic-bezier(.16,1,.3,1) both; }
+.animate-spin-slow { animation: spin 1s linear infinite; }
+.pulse-dot         { animation: pulse-dot 2s ease infinite; }
+
+/* Stagger children */
+.stagger > *:nth-child(1) { animation-delay: 0ms; }
+.stagger > *:nth-child(2) { animation-delay: 60ms; }
+.stagger > *:nth-child(3) { animation-delay: 120ms; }
+.stagger > *:nth-child(4) { animation-delay: 180ms; }
+
+/* =========================================================
+   Global form focus ring
+   ========================================================= */
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: none;
+  border-color: var(--color-electric) !important;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+}
