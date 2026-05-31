@@ -43,18 +43,24 @@ Enter the credentials above and click **Sign In**.
 
 ### Step 1 — Configure Your Product Profile
 
-Upon login, you land on the **Prospecting** dashboard. At the top, a collapsed **Product Profile** card shows your current installation details.
+Upon login, you land on the **Prospecting** dashboard. At the top, you will see the **Product Profile** banner displaying the current active asset: `Giant Foam / Bubble Machine`.
 
-Click **"Edit product"** to expand it, or use these pre-filled values (already saved from a previous session via `localStorage`):
+Click the **"Edit product"** button in the top-right corner of the card to expand the full configurations panel.
 
-| Field         | Example Value                                                                 |
-|---------------|-------------------------------------------------------------------------------|
-| Product Name  | `Bubble Bike`                                                                 |
-| Description   | `A custom-built cargo bike with a roof-mounted bubble cannon. Perfect for outdoor festivals, street activations, and parades. Creates a 10-metre radius of giant bubbles.` |
-| Rental Price  | `2450`                                                                        |
-| Base Cost     | `650`                                                                         |
+![Edit Product Expanded Panel](public/screenshot-edit-product.png)
 
-> **Behind the scenes:** As you type the rental price (€2,450) and base cost (€650), the **real-time margin calculator** instantly computes your profit: **€1,800 per event (73.5% margin)**. This figure is displayed in green next to the product details. The entire Product Profile persists in `localStorage` — you never need to re-enter installation details between sessions.
+#### Visual Elements & Fields in the Edit Panel:
+- **Product Name:** The specific name of the installation being leased (e.g., `Giant Foam / Bubble Machine`).
+- **Rental Price:** The fee charged to the venue per single event day.
+- **Base Cost:** The raw overhead cost for materials (fluid, logistics, operator) per single event day.
+- **Product Description:** A detailed visual representation of the experience. The AI relies heavily on this field to craft highly tailored, context-specific outreach emails.
+- **Product Photo:** A drag-and-drop file uploader (integrated with Supabase Storage) allowing team members to link product imagery directly to generated client proposals.
+
+#### Interactive Smart Mechanics:
+- **Real-Time Margin Calculator:** As you type or adjust the values of **Rental Price** and **Base Cost**, NebulaKit's built-in margin calculator instantly computes the exact profit margin. In the screenshot above, setting the rental price to **€1,500** and base cost to **€400** immediately displays: **`Margin €1.100/event`** in bold green.
+- **Session Persistence:** All modifications to the product details are dynamically tracked and written to `localStorage`. Even if a user refreshes their browser, closes the application, or loses connection, the exact visual specifications and pricing tokens remain completely intact without needing a database round-trip.
+
+Once updated, click **"Save & Close"** to collapse the panel and locks the profile into the prospecting engine context.
 
 ---
 
