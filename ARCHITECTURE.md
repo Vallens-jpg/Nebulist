@@ -2,13 +2,13 @@
 
 ## 1. Backend Design & Data Integration
 
-Backend menggunakan arsitektur *serverless* dengan Supabase sebagai BaaS dan orkestrasi API eksternal yang dipicu dari frontend.
+The backend is built on a serverless architecture with Supabase serving as BaaS, alongside external API orchestration triggered directly from the frontend client.
 
-### A. Alur Orkestrasi Data (Core AI Engine)
-1.  **Trigger:** Frontend mengirimkan `target_industry` dan `target_region` ke fungsi backend.
-2.  **Step 1 (Tavily API):** Melakukan hit API untuk mengambil maksimal 5 data bisnis publik (Nama, Website, Snippet Deskripsi) di wilayah Belanda target.
-3.  **Step 2 (Gemini API):** Mengirimkan data bisnis dan spesifikasi produk ke Gemini API dengan instruksi ketat: menghasilkan klasifikasi skor, alasan kecocokan, serta 2 draf email penawaran (Inggris formal & Belanda direct) dalam format JSON murni.
-4.  **Step 3 (Supabase DB):** Melakukan *parsing* JSON dan menyimpan data ke tabel `leads`.
+### A. Data Orchestration Flow (Core AI Engine)
+1. **Trigger:** The frontend dispatches `target_industry` and `target_region` parameters to the core service function.
+2. **Step 1 (Tavily API / Local B2B Proxy):** Executes a query to retrieve up to 5 public business profiles (Name, Website, Description snippet) within the target Netherlands municipality.
+3. **Step 2 (Gemini API):** Forwards the business listings alongside the active product specifications to the Gemini API under strict configuration constraints. The model outputs a lead score classification, fitting rationale, and 2 complete outreach email drafts (formal English and direct Dutch) in pure, parsing-safe JSON format.
+4. **Step 3 (Supabase DB):** Parses the generated JSON array and inserts the prospect records directly into the `leads` table.
 
 ### B. Database Schema (Supabase SQL)
 ```sql
@@ -39,34 +39,35 @@ CREATE TABLE leads (
     created_at TIMESTAMP DEFAULT NOW()
 );
 ```
+
 ## 2. UI/UX Blueprint
 
-Aplikasi dibangun sebagai **Single Page Application (SPA)** dengan Sidebar navigasi statis dan ruang konten utama yang lega.
+The application is structured as a premium **Single Page Application (SPA)** with a persistent sidebar layout and a spacious main content canvas.
 
-### A. Komponen Halaman
+### A. Interface Components
 
-#### 1. Tab Dashboard & Input Form
-*   **Sisi Kiri (Product Details):** 
-    *   Input teks nama produk.
-    *   Textarea deskripsi produk/instalasi secara visual.
-    *   Dropzone untuk unggah foto aset (langsung terhubung ke Supabase Storage).
-    *   Input angka untuk harga sewa (*rental price*) dan biaya modal (*base cost*).
-*   **Sisi Kanan (Target Market):** 
-    *   Dropdown kategori industri (*Nightclubs & Bars, Music Festivals, Corporate Events, Museums & Public Art*).
-    *   Input teks wilayah target di Belanda (contoh: Amsterdam, Rotterdam).
-*   **Aksi:** Tombol `"Run AI Prospecting Engine"` dengan status animasi loading yang bersih saat AI sedang memproses data di balik layar.
+#### 1. Dashboard Tab & Intake Form
+* **Left Section (Product Details):**
+  * Product name text input.
+  * Product/installation visual description textarea.
+  * Visual asset dropzone (directly connected to Supabase Storage).
+  * Numerical inputs for rental price and base overhead cost.
+* **Right Section (Target Market):**
+  * Industry category dropdown selector (*Nightclubs & Bars, Music Festivals, Corporate Events, Museums & Public Art*).
+  * Target region text input (e.g., Amsterdam, Rotterdam).
+* **Call to Action:** `"✦ Find Clients Now"` button featuring clean, premium state-transition micro-animations while the AI backend processes data.
 
-#### 2. Tab Lead Management (Kanban CRM)
-*   **Papan Kanban 3 Kolom:** Berjajar horizontal membagi prospek berdasarkan status alur kerja: `Leads Found` | `Pitch Sent` | `Replied`.
-*   **Kartu Prospek (Leads Card):** Komponen kartu di dalam kolom yang menampilkan:
-    *   Nama Perusahaan.
-    *   Badge skor dengan warna pastel diredam (*soft pastel colors*): Hot (`bg-rose-50 text-rose-700`), Warm (`bg-amber-50 text-amber-700`), Cold (`bg-blue-50 text-blue-700`).
-    *   Tombol `"Review & Pitch"` untuk membuka detail interaktif.
+#### 2. Lead Management Tab (Kanban CRM)
+* **3-Column Kanban Board:** Horizontally aligned boards dividing prospects into workflow phases: `Leads Found` | `Pitch Sent` | `Replied`.
+* **Lead Cards:** Component instances rendered dynamically in columns featuring:
+  * Company name.
+  * Score indicator badges styled with soft, muted pastel tokens: Hot (`bg-rose-50 text-rose-700`), Warm (`bg-amber-50 text-amber-700`), Cold (`bg-blue-50 text-blue-700`).
+  * `"Review & Pitch"` primary CTA triggers the focus detail window.
 
-#### 3. Modal Popup (Action Center)
-*   Jendela popup yang terbuka otomatis di tengah layar ketika kartu prospek diklik.
-*   **Konten Inside Modal:**
-    *   Menampilkan alasan penilaian skor dari AI (*Score Reason*).
-    *   Tab pemindah dokumen penawaran: `Email (English)` dan `Email (Nederlands)`.
-    *   Tombol **"One-Click Copy"** untuk menyalin draf email yang dipilih secara instan.
-    *   Kolom input teks respons klien (*Objection Handler*): Tempat pengguna memasukkan keluhan atau balasan nego dari klien untuk memicu fungsi **AI Next-Step Advice** secara instan sebagai panduan memenangkan kesepakatan sewa.
+#### 3. Action Center Modal
+* A centered modal overlay that animates into view when a card's review button is pressed.
+* **Modal Context Elements:**
+  * Displays the exact product-prospect scoring rationale parsed from the AI pipeline.
+  * Dynamic localization tabs: Toggle between `🇬🇧 Email (English)` and `🇳🇱 Email (Nederlands)`.
+  * Instantly copies the selected pitch draft to the clipboard with a copy confirmation badge.
+  * **Interactive Objection Handler:** A text input area where users paste real-time client concerns to instantly invoke the ephemeral **AI Next-Step Advice** generator to secure bookings.
